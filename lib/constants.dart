@@ -10,6 +10,7 @@ const String loginApiUrl = "login";
 const String userClassApiUrl = "user-class";
 const String userLectureApiUrl = "user-lecture";
 const String userLectureHistoryApiUrl ="user-lecture-history";
+const String userCourseApiUrl = "user-course";
 
 ///loader
 bool isLoading = true;

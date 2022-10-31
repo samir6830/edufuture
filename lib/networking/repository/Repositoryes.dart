@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:edufuture/networking/model/request%20model/user_class_request_model.dart';
 import 'package:edufuture/networking/model/response%20model/user_class_response_model.dart';
+import 'package:edufuture/networking/model/response%20model/user_course_response_model.dart';
 import 'package:edufuture/networking/model/response%20model/user_lecture_history_response_model.dart';
 import 'package:edufuture/networking/model/response%20model/user_lecture_response_model.dart';
 import 'package:edufuture/networking/repository/ApiProvider.dart';
@@ -59,5 +60,18 @@ class UserLectureHistoryRepository {
       body: jsonEncode(userClassRequestModel),
     );
     return UserLectureHistoryResponseModel.fromJson(response);
+  }
+}
+
+class UserCourseRepository {
+  final ApiProvider _apiProvider = ApiProvider();
+
+  Future<UserCourseResponseModel> userCourse(
+      UserClassRequestModel userClassRequestModel) async {
+    final response = await _apiProvider.post(
+      userCourseApiUrl,
+      body: jsonEncode(userClassRequestModel),
+    );
+    return UserCourseResponseModel.fromJson(response);
   }
 }

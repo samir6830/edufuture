@@ -1,7 +1,13 @@
+import 'package:edufuture/networking/bloc/user_course_bloc.dart';
 import 'package:edufuture/ui/view_courses_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants.dart';
+import '../main.dart';
+import '../networking/model/request model/user_class_request_model.dart';
+import '../networking/model/response model/user_course_response_model.dart';
+import '../networking/response.dart';
 import '../widget/common_text_widget.dart';
 
 
@@ -13,6 +19,34 @@ class CourseScreen extends StatefulWidget {
 }
 
 class _CourseScreenState extends State<CourseScreen> {
+  late UserCourseBloc userCourseBloc;
+  List<CourseData> courseList = [];
+  @override
+  void initState() {
+
+    userCourseBloc = UserCourseBloc();
+    userCourseBloc.userCourse(UserClassRequestModel(
+      uaserId: int.parse(storage.read("userId").toString()),
+    ));
+    userCourseBloc.dataStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+          onLoading(context);
+          break;
+        case Status.COMPLETED:
+          stopLoader(context);
+          setState(() {
+            courseList.addAll(event.data.success);
+          });
+          break;
+        case Status.ERROR:
+          stopLoader(context);
+          print(Status.ERROR);
+          break;
+      }
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +57,7 @@ class _CourseScreenState extends State<CourseScreen> {
         title: const Text("Course"),
       ),
       body: ListView.builder(
-          itemCount: 50,
+          itemCount: courseList.length,
           itemBuilder: (context,index){
             return Container(
               margin: EdgeInsets.only(left: 2.w,right: 2.w,top: 4.w),
@@ -51,12 +85,12 @@ class _CourseScreenState extends State<CourseScreen> {
                       width: 75.w,
                       child: Column(
                         children: [
-                          commonTitleAndDescription("Name","Dhaval Thakkar"),
-                          commonTitleAndDescription("Description","English,Unit-1"),
-                          commonTitleAndDescription("Teacher","Dhaval Thakkar"),
-                          commonTitleAndDescription("Amount Paid","2200"),
-                          commonTitleAndDescription("Join Date","10-08-2022"),
-                          commonTitleAndDescription("Expiry Date","10-08-2022"),
+                          commonTitleAndDescription("Name","${courseList[index].name}"),
+                          commonTitleAndDescription("Description","${courseList[index].description}"),
+                          commonTitleAndDescription("Teacher","${courseList[index].teacherName}"),
+                          commonTitleAndDescription("Amount Paid","2000"),
+                          commonTitleAndDescription("Join Date","${courseList[index].publishDate}"),
+                          commonTitleAndDescription("Expiry Date","${courseList[index].expiryDate}"),
                         ],
                       )),
                   SizedBox(
